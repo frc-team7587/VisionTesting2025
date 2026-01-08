@@ -14,9 +14,11 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -158,6 +160,24 @@ public class RobotContainer {
 
     // Switch to X pattern when X button is pressed
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // Example: Pathfind to a fixed field pose when Y is pressed
+    Pose2d fixedTargetPose =
+        new Pose2d(
+            3.0, // X meters
+            4.0, // Y meters
+            Rotation2d.fromDegrees(0) // desired holonomic rotation at goal
+            );
+
+    PathConstraints pathfindConstraints =
+        new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    // Build the pathfinding command
+    Command goToFixedPose =
+        AutoBuilder.pathfindToPose(
+            fixedTargetPose, pathfindConstraints, 0.0 // goal end velocity
+            );
+    // Bind to Y button
+    controller.y().onTrue(goToFixedPose);
 
     // Reset gyro to 0° when B button is pressed
     controller
