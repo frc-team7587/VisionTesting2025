@@ -163,6 +163,36 @@ public class Drive extends SubsystemBase {
         false);
   }
 
+  /** Returns the closest reef scoring pose for the requested side. */
+  public Pose2d getClosestReefScoringPose(boolean leftSide) {
+    Pose2d[] reefPoses = FieldConstants.ReefScoringPositions;
+    Pose2d currentPose = getPose();
+
+    int closestPose = -1;
+    double closestDistance = Double.MAX_VALUE;
+
+    for (int i = 0; i < reefPoses.length; i++) {
+      boolean isLeft = i % 2 == 0;
+      if (leftSide != isLeft) {
+        continue;
+      }
+
+      Transform2d currentToTarget = AllianceFlipUtil.apply(reefPoses[i]).minus(currentPose);
+      double distance = currentToTarget.getTranslation().getNorm();
+
+      if (distance < closestDistance) {
+        closestPose = i;
+        closestDistance = distance;
+      }
+    }
+
+    if (closestPose < 0) {
+      return currentPose;
+    }
+
+    return AllianceFlipUtil.apply(reefPoses[closestPose]);
+  }
+
   @Override
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
