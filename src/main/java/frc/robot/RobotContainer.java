@@ -48,6 +48,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  // private final Shooter shooter;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -76,6 +77,7 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
         // new VisionIOLimelight(camera1Name, drive::getRotation));
+        // shooter = new Shooter(new ShooterIOSpark());
         break;
 
       case SIM:
@@ -95,6 +97,7 @@ public class RobotContainer {
                     VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose));
         // new VisionIOPhotonVisionSim(VisionConstants.camera1Name, robotToCamera1,
         // drive::getPose));
+        // shooter = new Shooter(new ShooterIOSpark());
         break;
 
       default:
@@ -109,6 +112,7 @@ public class RobotContainer {
         // Replayed robot, disable IO implementations
         // (Use same number of dummy implementations as the real robot)
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        // shooter = new Shooter(new ShooterIOSpark());
         break;
     }
 
@@ -193,8 +197,8 @@ public class RobotContainer {
                 .ignoringDisable(true));
                 */
     // Pathfind to the closest reef scoring pose
-    //controller.a().onTrue(pathfindToClosestReef(true));
-    //controller.b().onTrue(pathfindToClosestReef(false));
+    // controller.a().onTrue(pathfindToClosestReef(true));
+    // controller.b().onTrue(pathfindToClosestReef(false));
     // Auto aim command example
     @SuppressWarnings("resource")
     PIDController aimController = new PIDController(0.2, 0.0, 0.0);
@@ -211,7 +215,7 @@ public class RobotContainer {
                 },
                 drive));
 
-    //controller.rightTrigger().whileTrue(drive.alignToCenterReef());
+    // controller.rightTrigger().whileTrue(drive.alignToCenterReef());
   }
 
   /**
